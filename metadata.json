@@ -1,0 +1,6 @@
+{
+  "name": "Ludo Royale",
+  "description": "Premium multiplayer Ludo game featuring local pass & play, smart AI with multiple difficulties, online rooms, custom themes, sound effects, and smooth animations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

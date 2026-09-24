@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Ludo Royale</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="theme-classic">
+
+  <div id="app-container">
+
+    <!-- Global Top Bar (Persistent on Menus) -->
+    <header class="top-bar" id="app-top-bar">
+      <div class="user-badge" id="user-profile-badge" title="Open Profile">
+        <div class="avatar-wrapper" id="top-bar-avatar">👑</div>
+        <div class="user-info">
+          <span class="user-name" id="top-bar-user-name">RoyalePlayer</span>
+          <span class="user-level" id="top-bar-user-level">Level 1</span>
+        </div>
+      </div>
+
+      <div class="currency-badge" title="Virtual Coins">
+        <span class="coin-icon">🪙</span>
+        <span id="top-bar-coins">2,500</span>
+      </div>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="btn-quick-rules" onclick="window.uiManager.showModal('modal-rules')" title="Rules">
+          📖
+        </button>
+        <button class="icon-btn" id="btn-open-settings" title="Settings">
+          ⚙️
+        </button>
+      </div>
+    </header>
+
+    <!-- 1. MAIN MENU SCREEN -->
+    <main class="screen active" id="screen-main-menu">
+      <div class="main-menu-content">
+        <!-- Logo & Branding -->
+        <div class="game-logo-area">
+          <div class="logo-crown">👑</div>
+          <h1 class="game-title" data-i18n="gameTitle">LUDO ROYALE</h1>
+          <div class="game-subtitle">THE BOARD CHAMPIONSHIP</div>
+        </div>
+
+        <!-- Game Mode Cards -->
+        <div class="menu-modes-grid">
+          <!-- Pass & Play (Local Multiplayer) -->
+          <div class="mode-card primary" id="btn-mode-local">
+            <div class="mode-icon-circle">👥</div>
+            <div class="mode-text">
+              <div class="mode-title" data-i18n="passAndPlay">Pass & Play</div>
+              <div class="mode-desc" data-i18n="passAndPlayDesc">Play locally with 2-4 friends</div>
+            </div>
+          </div>
+
+          <!-- VS Computer AI -->
+          <div class="mode-card" id="btn-mode-ai">
+            <div class="mode-icon-circle">🤖</div>
+            <div class="mode-title" data-i18n="computer">VS Computer</div>
+            <div class="mode-desc" data-i18n="computerDesc">Smart AI opponents</div>
+          </div>
+
+          <!-- Quick Match / Online -->
+          <div class="mode-card" id="btn-mode-online">
+            <span class="badge-new">FAST</span>
+            <div class="mode-icon-circle">⚡</div>
+            <div class="mode-title" data-i18n="online">Online Match</div>
+            <div class="mode-desc" data-i18n="onlineDesc">Instant matchmaking</div>
+          </div>
+
+          <!-- Play with Friends (Custom Room) -->
+          <div class="mode-card" id="btn-mode-friends" style="grid-column: span 2;">
+            <div class="mode-icon-circle">🏠</div>
+            <div class="mode-title" data-i18n="friends">Play With Friends</div>
+            <div class="mode-desc" data-i18n="friendsDesc">Create or join custom 6-digit room</div>
+          </div>
+        </div>
+
+        <!-- Bottom Navigation Actions -->
+        <nav class="menu-bottom-nav">
+          <button class="bottom-nav-item" id="nav-shop">
+            <span class="nav-icon">🛍️</span>
+            <span data-i18n="shop">Shop</span>
+          </button>
+          <button class="bottom-nav-item" id="nav-missions">
+            <span class="nav-icon">🎯</span>
+            <span data-i18n="missions">Missions</span>
+          </button>
+          <button class="bottom-nav-item" id="nav-achievements">
+            <span class="nav-icon">🏆</span>
+            <span data-i18n="achievements">Badges</span>
+          </button>
+          <button class="bottom-nav-item" id="nav-daily">
+            <div class="notification-dot" id="daily-notif-dot" style="display: none;"></div>
+            <span class="nav-icon">🎁</span>
+            <span data-i18n="dailyReward">Daily</span>
+          </button>
+        </nav>
+      </div>
+    </main>
+
+    <!-- 2. GAMEPLAY SCREEN -->
+    <section class="screen" id="screen-game">
+      <!-- Game Top Status Bar -->
+      <div class="game-top-bar">
+        <button class="icon-btn" id="btn-game-pause" title="Pause / Menu">
+          ⏸️
+        </button>
+
+        <div class="game-turn-banner" id="game-turn-banner">
+          <span>Turn:</span>
+          <span id="turn-player-name" style="color: var(--accent-gold);">Player 1</span>
+        </div>
+
+        <button class="icon-btn" onclick="window.audioManager.toggleSound(!window.audioManager.soundEnabled); window.uiManager.showToast('Audio Toggled', 1000);" title="Toggle Sound">
+          🔊
+        </button>
+      </div>
+
+      <!-- Top Player Cards (Red & Green) -->
+      <div class="player-cards-container">
+        <!-- Player 0: Red -->
+        <div class="player-card red" id="player-card-0">
+          <div class="player-card-avatar" id="player-avatar-0">👑</div>
+          <div class="player-card-meta">
+            <span class="player-card-name" id="player-name-0">Red</span>
+            <span class="player-card-status" id="player-status-0">0/4 Home</span>
+          </div>
+          <div class="player-timer-bar"></div>
+        </div>
+
+        <!-- Player 1: Green -->
+        <div class="player-card green" id="player-card-1">
+          <div class="player-card-avatar" id="player-avatar-1">🤖</div>
+          <div class="player-card-meta">
+            <span class="player-card-name" id="player-name-1">Green</span>
+            <span class="player-card-status" id="player-status-1">0/4 Home</span>
+          </div>
+          <div class="player-timer-bar"></div>
+        </div>
+      </div>
+
+      <!-- Center Ludo Board Viewport -->
+      <div class="board-container" id="board-container">
+        <div class="ludo-board-wrapper">
+          <div id="ludo-board"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Player Cards (Blue & Yellow) -->
+      <div class="player-cards-container">
+        <!-- Player 3: Blue (Bottom-Left) -->
+        <div class="player-card blue" id="player-card-3">
+          <div class="player-card-avatar" id="player-avatar-3">🎮</div>
+          <div class="player-card-meta">
+            <span class="player-card-name" id="player-name-3">Blue</span>
+            <span class="player-card-status" id="player-status-3">0/4 Home</span>
+          </div>
+          <div class="player-timer-bar"></div>
+        </div>
+
+        <!-- Player 2: Yellow (Bottom-Right) -->
+        <div class="player-card yellow" id="player-card-2">
+          <div class="player-card-avatar" id="player-avatar-2">🌟</div>
+          <div class="player-card-meta">
+            <span class="player-card-name" id="player-name-2">Yellow</span>
+            <span class="player-card-status" id="player-status-2">0/4 Home</span>
+          </div>
+          <div class="player-timer-bar"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Interactive Control Dock -->
+      <div class="game-bottom-controls">
+        <!-- Quick Chat Button -->
+        <button class="icon-btn" id="btn-quick-chat" title="Quick Chat">
+          💬
+        </button>
+
+        <!-- 3D Interactive Dice -->
+        <div class="dice-action-area">
+          <div class="dice-container" id="interactive-dice-container"></div>
+        </div>
+
+        <!-- How to play helper -->
+        <button class="icon-btn" onclick="window.uiManager.showModal('modal-rules')" title="Rules">
+          ❓
+        </button>
+      </div>
+
+      <!-- Quick Chat Popover -->
+      <div class="quick-chat-popover" id="quick-chat-popover">
+        <div class="chat-emojis-row">
+          <button class="chat-emoji-btn" onclick="window.sendQuickChat('😄', true)">😄</button>
+          <button class="chat-emoji-btn" onclick="window.sendQuickChat('😂', true)">😂</button>
+          <button class="chat-emoji-btn" onclick="window.sendQuickChat('🎉', true)">🎉</button>
+          <button class="chat-emoji-btn" onclick="window.sendQuickChat('👍', true)">👍</button>
+          <button class="chat-emoji-btn" onclick="window.sendQuickChat('🔥', true)">🔥</button>
+          <button class="chat-emoji-btn" onclick="window.sendQuickChat('👑', true)">👑</button>
+        </div>
+        <div class="chat-messages-list">
+          <button class="chat-msg-btn" onclick="window.sendQuickChat('Good luck!')">Good luck! 🍀</button>
+          <button class="chat-msg-btn" onclick="window.sendQuickChat('Nice move!')">Nice move! 👏</button>
+          <button class="chat-msg-btn" onclick="window.sendQuickChat('Well played!')">Well played! ⭐</button>
+          <button class="chat-msg-btn" onclick="window.sendQuickChat('Let\'s go!')">Let's go! 🚀</button>
+          <button class="chat-msg-btn" onclick="window.sendQuickChat('Oops!')">Oops! 😅</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="game-toast" id="game-toast">
+      <span>🔔</span>
+      <span id="toast-message">Notification</span>
+    </div>
+
+    <!-- MODALS -->
+
+    <!-- Modal: Select Players Count (Pass & Play) -->
+    <div class="modal-overlay" id="modal-select-players">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title" data-i18n="passAndPlay">Pass & Play</div>
+          <button class="icon-btn" onclick="window.uiManager.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 13px; color: var(--text-muted);">Choose the number of players around this device:</p>
+          <div style="display: flex; gap: 12px; margin-top: 8px;">
+            <button class="btn btn-primary" style="flex: 1;" onclick="window.startLocalGame(2)">2 Players</button>
+            <button class="btn btn-primary" style="flex: 1;" onclick="window.startLocalGame(3)">3 Players</button>
+            <button class="btn btn-primary" style="flex: 1;" onclick="window.startLocalGame(4)">4 Players</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: VS Computer AI Settings -->
+    <div class="modal-overlay" id="modal-ai-settings">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title" data-i18n="computer">VS Computer</div>
+          <button class="icon-btn" onclick="window.uiManager.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">AI Difficulty</label>
+            <div style="display: flex; gap: 8px;">
+              <label style="flex: 1; padding: 10px; background: rgba(255,255,255,0.06); border-radius: 10px; text-align: center; cursor: pointer;">
+                <input type="radio" name="ai-diff" value="easy">
+                <div style="font-size: 13px; font-weight: 700; margin-top: 4px;" data-i18n="easy">Easy</div>
+              </label>
+              <label style="flex: 1; padding: 10px; background: rgba(255,255,255,0.06); border-radius: 10px; text-align: center; cursor: pointer;">
+                <input type="radio" name="ai-diff" value="medium" checked>
+                <div style="font-size: 13px; font-weight: 700; margin-top: 4px;" data-i18n="medium">Medium</div>
+              </label>
+              <label style="flex: 1; padding: 10px; background: rgba(255,255,255,0.06); border-radius: 10px; text-align: center; cursor: pointer;">
+                <input type="radio" name="ai-diff" value="hard">
+                <div style="font-size: 13px; font-weight: 700; margin-top: 4px;" data-i18n="hard">Hard</div>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="selectColor">Select Your Color</label>
+            <div style="display: flex; gap: 8px;">
+              <label style="flex: 1; padding: 8px; background: #E11D48; border-radius: 10px; text-align: center; cursor: pointer; color: white;">
+                <input type="radio" name="ai-color" value="red" checked>
+                <div style="font-size: 12px; font-weight: 800;">Red</div>
+              </label>
+              <label style="flex: 1; padding: 8px; background: #059669; border-radius: 10px; text-align: center; cursor: pointer; color: white;">
+                <input type="radio" name="ai-color" value="green">
+                <div style="font-size: 12px; font-weight: 800;">Green</div>
+              </label>
+              <label style="flex: 1; padding: 8px; background: #D97706; border-radius: 10px; text-align: center; cursor: pointer; color: white;">
+                <input type="radio" name="ai-color" value="yellow">
+                <div style="font-size: 12px; font-weight: 800;">Yellow</div>
+              </label>
+              <label style="flex: 1; padding: 8px; background: #2563EB; border-radius: 10px; text-align: center; cursor: pointer; color: white;">
+                <input type="radio" name="ai-color" value="blue">
+                <div style="font-size: 12px; font-weight: 800;">Blue</div>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="playersCount">Total Players</label>
+            <select class="form-input" id="ai-player-count">
+              <option value="2">2 Players (1 vs 1 CPU)</option>
+              <option value="3">3 Players (1 vs 2 CPUs)</option>
+              <option value="4" selected>4 Players (1 vs 3 CPUs)</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary btn-block" onclick="window.startAIGame()" data-i18n="startGame">Start Game</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Play With Friends / Room Code -->
+    <div class="modal-overlay" id="modal-friends-lobby">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title" data-i18n="friends">Play With Friends</div>
+          <button class="icon-btn" onclick="window.uiManager.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="background: rgba(255,255,255,0.05); padding: 16px; border-radius: 16px; text-align: center;">
+            <div style="font-size: 12px; color: var(--text-muted);" data-i18n="roomCode">Room Code</div>
+            <div style="font-size: 28px; font-weight: 900; letter-spacing: 2px; color: var(--accent-gold); margin: 6px 0;" id="lobby-room-code">
+              ROYAL-7489
+            </div>
+            <button class="btn btn-outline" style="font-size: 12px; padding: 6px 14px;" onclick="window.createCustomRoom()">
+              Generate New Code 🎲
+            </button>
+          </div>
+
+          <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 6px 0;"></div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="joinRoom">Join An Existing Room</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" class="form-input" id="input-join-code" placeholder="ROYAL-XXXX" style="flex: 1; text-transform: uppercase;">
+              <button class="btn btn-gold" onclick="window.joinCustomRoom()" data-i18n="joinRoom">Join</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary btn-block" onclick="window.startQuickMatch()" data-i18n="startGame">Start Lobby Match</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Shop Customization -->
+    <div class="modal-overlay" id="modal-shop">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title" data-i18n="shop">Royale Shop</div>
+          <button class="icon-btn" onclick="window.uiManager.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="shop-tabs">
+            <button class="shop-tab-btn active" id="shop-tab-themes" onclick="window.switchShopTab('themes')">Board Themes</button>
+            <button class="shop-tab-btn" id="shop-tab-dice" onclick="window.switchShopTab('dice')">Dice Skins</button>
+            <button class="shop-tab-btn" id="shop-tab-tokens" onclick="window.switchShopTab('tokens')">Token Styles</button>
+          </div>
+
+          <div class="shop-grid" id="shop-items-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Player Profile -->
+    <div class="modal-overlay" id="modal-profile">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title" data-i18n="profile">Player Profile</div>
+          <button class="icon-btn" onclick="window.uiManager.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div class="avatar-wrapper" style="width: 56px; height: 56px; font-size: 30px;" id="profile-current-avatar">👑</div>
+            <div style="flex: 1;">
+              <input type="text" class="form-input" id="profile-edit-name" maxlength="14" style="margin-bottom: 4px;">
+              <div style="font-size: 12px; color: var(--accent-gold-light); font-weight: 700;" id="profile-level-display">Level 1 (0 / 300 XP)</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Choose Avatar</label>
+            <div style="display: flex; justify-content: space-around; font-size: 24px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 12px;">
+              <span style="cursor: pointer;" onclick="window.selectAvatar('👑')">👑</span>
+              <span style="cursor: pointer;" onclick="window.selectAvatar('🦁')">🦁</span>
+              <span style="cursor: pointer;" onclick="window.selectAvatar('🐯')">🐯</span>
+              <span style="cursor: pointer;" onclick="window.selectAvatar('🦅')">🦅</span>
+              <span style="cursor: pointer;" onclick="window.selectAvatar('🐺')">🐺</span>
+              <span style="cursor: pointer;" onclick="window.selectAvatar('🦊')">🦊</span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="podium-item" style="flex-direction: column; align-items: flex-start;">
+              <span style="font-size: 11px; color: var(--text-muted);" data-i18n="gamesPlayed">Games Played</span>
+              <span style="font-size: 18px; font-weight: 900;" id="profile-stats-played">0</span>
+            </div>
+            <div class="podium-item" style="flex-direction: column; align-items: flex-start;">
+              <span style="font-size: 11px; color: var(--text-muted);" data-i18n="winRate">Win Rate</span>
+              <span style="font-size: 18px; font-weight: 900; color: var(--success);" id="profile-stats-winrate">0%</span>
+            </div>
+            <div class="podium-item" style="flex-direction: column; align-items: flex-start;">
+              <span style="font-size: 11px; color: var(--text-muted);" data-i18n="wins">Wins</span>
+              <span style="font-size: 18px; font-weight: 900; color: var(--accent-gold);" id="profile-stats-won">0</span>
+            </div>
+            <div class="podium-item" style="flex-direction: column; align-items: flex-start;">
+              <span style="font-size: 11px; color: var(--text-muted);" data-i18n="losses">Losses</span>
+              <span style="font-size: 18px; font-weight: 900; color: var(--danger);" id="profile-stats-lost">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary btn-block" onclick="window.saveProfile()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Daily Missions -->
+    <div class="modal-overlay" id="modal-missions">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title" data-i18n="missions">Daily Missions</div>
+          <button class="icon-btn" onclick="window.uiManager.closeModal()">✕</button>
+        </div>
+        <div class="modal-body" id="missions-list"></div>
+      </div>
+    </div>
+
+    <!-- Modal: Achievements -->
+    <div class="modal-overlay" id="modal-achievements">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title" data-i18n="achievements">Achievements</div>
+          <button class="icon-btn" onclick="window.uiManager.closeModal()">✕</button>
+        </div>
+        <div class="modal-body" id="achievements-list"></div>
+      </div>
+    </div>
+
+    <!-- Modal: Daily Reward -->
+    <div class="modal-overlay" id="modal-daily-reward">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title" data-i18n="dailyReward">Daily Reward</div>
+          <button class="icon-btn" onclick="window.uiManager.closeModal()">✕</button>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+          <div style="font-size: 54px; margin: 10px 0;">🎁</div>
+          <div style="font-size: 14px; font-weight: 700; color: var(--accent-gold);" id="daily-streak-display">Streak: 1 Day 🔥</div>
+          <div style="font-size: 26px; font-weight: 900; color: #FFFFFF; margin: 8px 0;" id="daily-reward-display">+250 🪙 Coins</div>
+          <p style="font-size: 12px; color: var(--text-muted);">Check back every day to increase your streak and earn bigger rewards!</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-gold btn-block" id="btn-claim-daily" onclick="window.claimDailyRewardAction()" data-i18n="claim">Claim Reward</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Settings -->
+    <div class="modal-overlay" id="modal-settings">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title" data-i18n="settings">Settings</div>
+          <button class="icon-btn" onclick="window.uiManager.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group" style="flex-direction: row; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; font-size: 14px;" data-i18n="soundFX">Sound Effects</span>
+            <input type="checkbox" id="setting-sound" checked style="width: 20px; height: 20px; accent-color: var(--primary-color);">
+          </div>
+          <div class="form-group" style="flex-direction: row; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; font-size: 14px;" data-i18n="bgMusic">Background Music</span>
+            <input type="checkbox" id="setting-music" checked style="width: 20px; height: 20px; accent-color: var(--primary-color);">
+          </div>
+          <div class="form-group" style="flex-direction: row; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; font-size: 14px;" data-i18n="vibration">Vibration Haptics</span>
+            <input type="checkbox" id="setting-vibration" checked style="width: 20px; height: 20px; accent-color: var(--primary-color);">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="language">Language</label>
+            <select class="form-input" id="setting-language">
+              <option value="en">English (US)</option>
+              <option value="bn">বাংলা (Bengali)</option>
+              <option value="hi">हिंदी (Hindi)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Game Pause / Exit Confirmation -->
+    <div class="modal-overlay" id="modal-pause-game">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title">Match Paused</div>
+          <button class="icon-btn" onclick="window.uiManager.closeModal()">✕</button>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+          <p style="font-size: 14px; margin-bottom: 12px;">Do you want to leave this match and return to the main menu?</p>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-outline" style="flex: 1;" onclick="window.uiManager.closeModal()">Resume</button>
+            <button class="btn btn-primary" style="flex: 1; background: var(--danger);" onclick="window.exitToMainMenu()" data-i18n="mainMenu">Leave Game</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Rules & How To Play -->
+    <div class="modal-overlay" id="modal-rules">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title" data-i18n="rules">Rules & Guide</div>
+          <button class="icon-btn" onclick="window.uiManager.closeModal()">✕</button>
+        </div>
+        <div class="modal-body" style="font-size: 13px; line-height: 1.5; color: #CBD5E1;">
+          <h4 style="color: var(--accent-gold); margin-bottom: 4px;">🎯 Objective</h4>
+          <p>Race all 4 of your tokens around the board and into your center Home Triangle before your opponents.</p>
+
+          <h4 style="color: var(--accent-gold); margin-top: 12px; margin-bottom: 4px;">🎲 Leaving Home Base</h4>
+          <p>You must roll a <strong>6</strong> to bring a token out of your starting yard onto your start cell.</p>
+
+          <h4 style="color: var(--accent-gold); margin-top: 12px; margin-bottom: 4px;">⚡ Extra Turns</h4>
+          <p>Rolling a <strong>6</strong>, capturing an opponent token, or getting a token safely into the home goal awards an immediate <strong>Extra Turn</strong>!</p>
+
+          <h4 style="color: var(--accent-gold); margin-top: 12px; margin-bottom: 4px;">⚔️ Capturing & Safe Cells</h4>
+          <p>Landing on an opponent's token sends it back to their yard! Tokens cannot be captured on <strong>Safe Star (⭐) cells</strong> or on starting squares.</p>
+
+          <h4 style="color: var(--accent-gold); margin-top: 12px; margin-bottom: 4px;">👑 Exact Roll to Finish</h4>
+          <p>Tokens require the exact number of steps to reach the final center crown cell.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Victory / Game Over Podium -->
+    <div class="modal-overlay" id="modal-victory">
+      <div class="modal-card">
+        <div class="victory-card">
+          <div class="victory-trophy">🏆</div>
+          <h2 style="font-size: 24px; font-weight: 900; margin-top: 8px;" data-i18n="gameOver">Match Finished!</h2>
+          <div class="podium-list" id="victory-podium-list"></div>
+
+          <div class="reward-pills-row" id="victory-rewards"></div>
+
+          <div style="display: flex; gap: 10px; width: 100%; margin-top: 18px;">
+            <button class="btn btn-outline" style="flex: 1;" onclick="window.exitToMainMenu()" data-i18n="mainMenu">Main Menu</button>
+            <button class="btn btn-primary" style="flex: 1;" onclick="window.uiManager.closeModal(); window.startLocalGame(4);" data-i18n="playAgain">Play Again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts in dependency order -->
+  <script src="js/audio.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/dice.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/multiplayer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
